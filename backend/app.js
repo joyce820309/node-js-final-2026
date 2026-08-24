@@ -1,0 +1,28 @@
+const express = require("express");
+const cors = require("cors");
+
+const hcRouter = require("./routes/healthcheck");
+const usersRouter = require("./routes/users");
+const { initDb } = require("./config/initDb");
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use(hcRouter);
+app.use("/api", usersRouter);
+
+initDb().catch((err) => {
+  console.error("Database initialization failed:", err.message);
+});
+
+app.use((req, res) =>
+  res.status(404).json({ status: "failed", message: "Not Found" }),
+);
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ status: "failed", message: err.message });
+});
+
+module.exports = app;
