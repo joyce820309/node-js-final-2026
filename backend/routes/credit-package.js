@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { pool } = require("../config/db");
 const { isUuid } = require("../utils/validators")
+const { sendErr } = require("../utils/response")
 
 router.get("/credit-package", async (req, res, next) => {
   try {
@@ -26,7 +27,7 @@ router.post("/credit-package", async (req, res, next) => {
 
 
   if (!validName || !validCreditAmount || !validPrice) {
-    return res.status(400).json({ status: "failed", message: "欄位未填寫正確" });
+    return sendErr(res, "欄位未填寫正確", 400)
   }
 
 
@@ -35,7 +36,7 @@ router.post("/credit-package", async (req, res, next) => {
   );
 
   if (isExistingName.rows.length > 0) {
-    return res.status(409).json({ status: "failed", message: "資料重複" });
+    return sendErr(res, "資料重複", 409)
   }
 
   try {
@@ -54,20 +55,16 @@ router.post("/credit-package", async (req, res, next) => {
 
 router.delete("/credit-package/:id", async (req, res, next) => {
   const { id } = req.params;
-  if (!isUuid(id)) {
-    return res.status(400).json({ status: "failed", message: "ID錯誤" });
-  }
+  if (!isUuid(id)) return sendErr(res, "ID錯誤", 400)
 
   try {
-
-
     const isExistingPkg = await pool.query(
       "SELECT id, name FROM credit_packages WHERE id = $1", [id]
     );
 
 
     if (!isExistingPkg.rowCount) {
-      return res.status(400).json({ status: "failed", message: "ID錯誤" });
+      return sendErr(res, "ID錯誤", 400)
     }
 
     const result = await pool.query(
