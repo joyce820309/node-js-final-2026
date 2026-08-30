@@ -5,8 +5,9 @@ const hcRouter = require("./routes/healthcheck");
 const coachesRouter = require("./routes/coaches");
 const creditPackageRouter = require("./routes/credit-package");
 const usersRouter = require("./routes/users");
-const adminCoachesRouter = require("./routes/admin-coaches")
-// const adminCoursesRouter = require("./routes/admin-courses")
+const adminCoachesRouter = require("./routes/admin-coaches");
+const coursesRouter = require("./routes/courses");
+const revenueRouter = require("./routes/revenue");
 
 const { initDb } = require("./config/initDb");
 
@@ -19,7 +20,8 @@ app.use("/api", coachesRouter);
 app.use("/api", usersRouter);
 app.use("/api", creditPackageRouter);
 app.use("/api", adminCoachesRouter);
-// app.use("/api", adminCoursesRouter);
+app.use("/api", coursesRouter);
+app.use("/api", revenueRouter);
 
 initDb().catch((err) => {
   console.error("Database initialization failed:", err.message);

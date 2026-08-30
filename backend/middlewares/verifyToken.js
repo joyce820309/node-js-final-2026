@@ -31,7 +31,7 @@ const verifyToken = function (req, res, next) {
 
     return res.status(401).json({
       status: "failed",
-      message: "Token 無效或已過期",
+      message: "無效的 token",
     });
   }
 };
